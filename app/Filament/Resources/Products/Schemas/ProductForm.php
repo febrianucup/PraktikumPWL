@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\FileUpload;
@@ -22,6 +23,7 @@ class ProductForm
                 ComponentsWizard::make([
                     Step::make('Product Info')
                         ->description('ISi Informasi Produk')
+                        ->icon('heroicon-o-bookmark')
                         ->schema([
                             Group::make([
                                 TextInput::make('name')->required(),
@@ -31,15 +33,23 @@ class ProductForm
                         ]),
                     Step::make('Product Price and Stock')
                         ->description('Isi Harga Produk')
+                        ->icon('heroicon-o-currency-dollar')
                         ->schema([
                             Group::make([
-                                TextInput::make('price')->required()->numeric(),
+                                TextInput::make('price')->required()->numeric()->rules([
+                                    fn():Closure=>function(string $attribute, $value, Closure $fail){
+                                        if($value<=0){
+                                            $fail('Price must be greater than 0');
+                                        }
+                                    }
+                                ]),
                                 TextInput::make('stock')->required(),
                             ])->columns(2),
-                            MarkdownEditor::make('description')
+                            MarkdownEditor::make('description')->required()
                         ]),
                     Step::make('Media and Status')
                         ->description('Isi Gambar Produk')
+                        ->icon('heroicon-o-camera')
                         ->schema([
                             FileUpload::make('image')
                             ->disk('public')
