@@ -15,9 +15,10 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('slug'),
-            ])
+                TextColumn::make('name')->sortable(),
+                TextColumn::make('slug')->sortable(),
+                TextColumn::make('created_at')->sortable()->label('Create At')->dateTime(),
+            ])->defaultSort('created_at', 'dsc')
             ->filters([
                 //
             ])
