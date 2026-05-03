@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Posts\Schemas;
 
+use App\Models\Category;
 use Dom\Text;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\ColorPicker;
@@ -42,7 +43,8 @@ class PostForm
                                 'unique' => 'Slug harus unik dan tidak boleh sama']),
                         Select::make('category_id')
                             ->relationship('category', 'name')
-                            ->preload()
+                            // ->preload()
+                            ->options(Category::all()->pluck('name', 'id'))
                             ->required()
                             ->searchable(),
                         ColorPicker::make('color')
@@ -64,7 +66,10 @@ class PostForm
                 Section::make('Meta Informations')
                     ->icon('heroicon-o-bookmark')
                     ->schema([
-                        TagsInput::make('tags'),
+                        Select::make('tags')
+                            ->relationship('tags','name')
+                            ->multiple()
+                            ->preload(),
                         Checkbox::make('published'),
                     ]),
                 DatePicker::make('published_at')->columnSpanFull(),
